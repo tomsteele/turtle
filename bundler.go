@@ -14,11 +14,11 @@ import (
 // AuthMode constants.
 const (
 	AUTHMODEREQUIRED = "required"
-	AUTMODETRY       = "try"
+	AUTHMODETRY      = "try"
 	AUTHMODENONE     = "none"
 )
 
-var validMode = map[string]bool{AUTHMODEREQUIRED: true, AUTHMODENONE: true, AUTMODETRY: true}
+var validMode = map[string]bool{AUTHMODEREQUIRED: true, AUTHMODENONE: true, AUTHMODETRY: true}
 
 func isValidAuthMode(mode string) bool {
 	_, ok := validMode[mode]
