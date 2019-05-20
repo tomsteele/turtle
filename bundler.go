@@ -29,6 +29,9 @@ func isValidAuthMode(mode string) bool {
 // holding credentials returned from Scheme.Authenticate.
 type CtxCredentials struct{}
 
+// CtxIsAuthenticated can be used to detect if a request has been authenticated.
+type CtxIsAuthenticated struct{}
+
 // ErrorWriter implements error handling for bundles HandlerFunc.
 // err is a boom.Error and has information such as status codes.
 // Seee DefaultErrorWriter for implementation details.
@@ -176,6 +179,7 @@ type bundle struct {
 // authenticate attempts to authenticate a request for the configured schemes.
 func (b *bundle) authenticate(next func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		r = r.WithContext(context.WithValue(r.Context(), CtxIsAuthenticated{}, false))
 		if b.opts.AuthMode == AUTHMODENONE {
 			next(w, r)
 			return
@@ -198,6 +202,7 @@ func (b *bundle) authenticate(next func(http.ResponseWriter, *http.Request)) fun
 				}
 			} else {
 				r = r.WithContext(context.WithValue(r.Context(), CtxCredentials{}, user))
+				r = r.WithContext(context.WithValue(r.Context(), CtxIsAuthenticated{}, true))
 				break
 			}
 		}
